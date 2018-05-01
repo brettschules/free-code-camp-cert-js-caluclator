@@ -1,12 +1,7 @@
 class CellDisplay {
-
   render(item) {
-    return `<div>${item}</div>`
+    return `<button type="button" class="btn btn-primary">${item}</button>`;
   }
-}
-
-class Operators {
-
 }
 
 class GenerateDisplay {
@@ -20,7 +15,7 @@ class GenerateDisplay {
     var string = '';
     for (var i = 1; i < 10; i++) {
       // creates row to only push every three number
-      string += `<div class="col-md-3">${cellDisplay.render(i.toString())}</div>`;
+      string += `<div class="col-md-3 key" id=${i}>${cellDisplay.render(i.toString())}</div>`;
       if (i % 3 === 0) {
         var htmlString = `<div class="row">${string}</div>`
         this.numberItems.push(htmlString);
@@ -38,21 +33,39 @@ class GenerateDisplay {
     var joinedHtml = this.numberItems.join('');
     this.addToHtml(joinedHtml, calucatorElement);
     return calucatorElement
-
   }
 }
 
-window.onload = function(){
-  var n = new GenerateDisplay();
-  n.createNumberRows();
 
-  console.log(n.render());
-}
 
 
 
 class Calucator {
+  constructor() {
+    this.n = new GenerateDisplay();
+    this.n.createNumberRows();
+    this.n.render();
 
+  }
+
+  addEventListenerToNumberButtons() {
+    var buttonElements = document.getElementsByClassName('key');
+    for (var i = 0; i < buttonElements.length; i++) {
+      buttonElements[i].addEventListener("click", this.display.bind(this))
+    }
+  }
+
+  display(test) {
+    var value = test.currentTarget.id;
+    var element = document.getElementById("display");
+    element.innerHTML = value;
+  }
+
+}
+
+window.onload = function(){
+  var n = new Calucator();
+  n.addEventListenerToNumberButtons();
 }
 
 class App {
