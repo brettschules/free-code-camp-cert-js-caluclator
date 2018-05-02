@@ -6,16 +6,25 @@ class CellDisplay {
 
 class GenerateDisplay {
   constructor() {
+    this.cellDisplay = new CellDisplay();
     this.numberItems = [];
+    this.operatorItems = [];
+  }
+
+  createOperatorRows() {
+    const operators= ["+","-","X","/"]
+    for (let i = 0; i < operators.length; i++) {
+      // creates row to only push every three number
+        let string = `<div class="row"><div class="col-md-3 key" id="${operators[i]}">${this.cellDisplay.render(operators[i])}</div></div>`;
+        this.operatorItems.push(string);
+      }
   }
 
   createNumberRows() {
-    var cellDisplay = new CellDisplay();
-    var newRow = false;
     var string = '';
     for (var i = 1; i < 10; i++) {
       // creates row to only push every three number
-      string += `<div class="col-md-3 key" id=${i}>${cellDisplay.render(i.toString())}</div>`;
+      string += `<div class="col-md-3 key" id=${i}>${this.cellDisplay.render(i.toString())}</div>`;
       if (i % 3 === 0) {
         var htmlString = `<div class="row">${string}</div>`
         this.numberItems.push(htmlString);
@@ -29,23 +38,23 @@ class GenerateDisplay {
   }
 
   render() {
-    var calucatorElement = document.getElementById("calucator");
-    var joinedHtml = this.numberItems.join('');
-    this.addToHtml(joinedHtml, calucatorElement);
-    return calucatorElement
+    var numbersElement = document.getElementById("numbers");
+    var joinedNumbersHtml = this.numberItems.join('');
+    this.addToHtml(joinedNumbersHtml, numbersElement);
+
+    var operatorsElement = document.getElementById("operators");
+    var joinedOperatorsHtml = this.operatorItems.join('');
+    this.addToHtml(joinedOperatorsHtml, operatorsElement);
   }
 }
-
-
-
 
 
 class Calucator {
   constructor() {
     this.n = new GenerateDisplay();
     this.n.createNumberRows();
+    this.n.createOperatorRows();
     this.n.render();
-
   }
 
   addEventListenerToNumberButtons() {
@@ -60,7 +69,6 @@ class Calucator {
     var element = document.getElementById("display");
     element.innerHTML = value;
   }
-
 }
 
 window.onload = function(){
