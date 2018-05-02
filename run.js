@@ -9,13 +9,13 @@ class GenerateDisplay {
     this.cellDisplay = new CellDisplay();
     this.numberItems = [];
     this.operatorItems = [];
+    this.operators = ["+","-","X","/"]
   }
 
   createOperatorRows() {
-    const operators= ["+","-","X","/"]
-    for (let i = 0; i < operators.length; i++) {
+    for (let i = 0; i < this.operators.length; i++) {
       // creates row to only push every three number
-        let string = `<div class="row"><div class="col-md-3 key" id="${operators[i]}">${this.cellDisplay.render(operators[i])}</div></div>`;
+        let string = `<div class="row"><div class="col-md-3 key" id="${this.operators[i]}">${this.cellDisplay.render(this.operators[i])}</div></div>`;
         this.operatorItems.push(string);
       }
   }
@@ -48,13 +48,15 @@ class GenerateDisplay {
   }
 }
 
-
 class Calucator {
   constructor() {
     this.n = new GenerateDisplay();
     this.n.createNumberRows();
     this.n.createOperatorRows();
     this.n.render();
+    this.currentDisplay = '';
+    this.num1 = null
+    this.total = 0;
   }
 
   addEventListenerToNumberButtons() {
@@ -67,8 +69,29 @@ class Calucator {
   display(test) {
     var value = test.currentTarget.id;
     var element = document.getElementById("display");
-    element.innerHTML = value;
+    this.currentDisplay += value;
+    element.innerHTML = this.currentDisplay;
+    this.calculate();
   }
+
+
+
+  calculate() {
+    for (var i = 0; i < this.currentDisplay.length; i++) {
+      currentValue = this.currentDisplay[i];
+      this.checkForOperators(currentValue);
+    }
+  }
+
+  checkForOperators(currentNumber) {
+    switch (this.currentDisplay) {
+      case '+':
+        console.log(this.num1, this.num2);
+        break;
+      default: console.log('na');
+    }
+  }
+
 }
 
 window.onload = function(){
