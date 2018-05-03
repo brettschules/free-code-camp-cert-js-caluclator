@@ -54,6 +54,7 @@ class Calucator {
     this.n.createNumberRows();
     this.n.createOperatorRows();
     this.n.render();
+    this.numbers = '';
     this.currentDisplay = '';
     this.num1 = null
     this.total = 0;
@@ -61,35 +62,56 @@ class Calucator {
 
   addEventListenerToNumberButtons() {
     var buttonElements = document.getElementsByClassName('key');
+    var totalElement = document.getElementById('total')
     for (var i = 0; i < buttonElements.length; i++) {
       buttonElements[i].addEventListener("click", this.display.bind(this))
     }
+    totalElement.addEventListener("click", this.calculate.bind(this))
   }
 
   display(test) {
     var value = test.currentTarget.id;
     var element = document.getElementById("display");
     this.currentDisplay += value;
+    if (!this.n.operators.includes(value)) {
+      this.currentNumber = value
+    }
     element.innerHTML = this.currentDisplay;
-    this.calculate();
+    this.calculate(value);
   }
 
 
 
-  calculate() {
-    for (var i = 0; i < this.currentDisplay.length; i++) {
-      currentValue = this.currentDisplay[i];
-      this.checkForOperators(currentValue);
-    }
-  }
+  calculate(currentOperator) {
+    var element = document.getElementById("display");
 
-  checkForOperators(currentNumber) {
-    switch (this.currentDisplay) {
+    switch (currentOperator) {
       case '+':
-        console.log(this.num1, this.num2);
-        break;
-      default: console.log('na');
+      this.total += parseInt(this.currentNumber, 10)
+      console.log(this.currentDisplay, 'display');
+      element.innerHTML = this.total;
+    default:
     }
+    console.log(this.total, 'total');
+  }
+
+  // checkForOperators(currentValue) {
+  //   if (currentValue === '+') {
+  //     this.total += parseInt(this.numbers, 10)
+  //     this.numbers = '';
+  //   }
+  //   console.log(this.numbers);
+  //
+  //
+  //
+  //   // }
+  // }
+
+  getTotal() {
+    console.log(this.total.toString());
+    debugger
+    this.total = 0;
+
   }
 
 }
