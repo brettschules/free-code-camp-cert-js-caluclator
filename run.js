@@ -9,7 +9,7 @@ class GenerateDisplay {
     this.cellDisplay = new CellDisplay();
     this.numberItems = [];
     this.operatorItems = [];
-    this.operators = ["+","-","X","/"]
+    this.operators = ["+","-","x","/"]
   }
 
   createOperatorRows() {
@@ -57,16 +57,21 @@ class Calucator {
     this.numbers = '';
     this.currentDisplay = '';
     this.num1 = null
+    this.start = true;
+    this.timesStart = true;
+    this.lastOperator = '';
     this.total = 0;
   }
 
   addEventListenerToNumberButtons() {
     var buttonElements = document.getElementsByClassName('key');
     var totalElement = document.getElementById('total')
+    var clearElement = document.getElementById('clear')
     for (var i = 0; i < buttonElements.length; i++) {
       buttonElements[i].addEventListener("click", this.display.bind(this))
     }
-    totalElement.addEventListener("click", this.calculate.bind(this))
+    totalElement.addEventListener("click", this.getTotal.bind(this))
+    clearElement.addEventListener("click", this.clear.bind(this))
   }
 
   display(test) {
@@ -76,11 +81,13 @@ class Calucator {
     if (!this.n.operators.includes(value)) {
       this.currentNumber = value
     }
-    element.innerHTML = this.currentDisplay;
+    element.innerHTML = this.currentNumber;
     this.calculate(value);
   }
 
-
+  getTotal() {
+    this.calculate(this.lastOperator)
+  }
 
   calculate(currentOperator) {
     var element = document.getElementById("display");
@@ -88,11 +95,56 @@ class Calucator {
     switch (currentOperator) {
       case '+':
       this.total += parseInt(this.currentNumber, 10)
-      console.log(this.currentDisplay, 'display');
       element.innerHTML = this.total;
+      this.lastOperator = '+'
+      break;
+
+      case '-':
+        if (this.start) {
+          this.total = parseInt(this.currentNumber, 10);
+          this.start = false;
+        }
+        this.total -= parseInt(this.currentNumber, 10)
+        element.innerHTML = this.total;
+        this.lastOperator = '-';
+        break
+
+      case 'x':
+        if (this.start) {
+          this.total = 1;
+          this.start = false;
+        }
+        this.total *= parseInt(this.currentNumber, 10)
+        element.innerHTML = this.total;
+        this.lastOperator = 'x';
+        console.log(this.total, 'total');
+        console.log(this.currentNumber, 'currentNumber');
+        break
+
+      case '/':
+      if (this.start) {
+        this.total  = this.total + 1 * this.currentNumber;
+        this.start = false;
+      }
+      this.total /= parseInt(this.currentNumber, 10)
+        element.innerHTML = this.total;
+        console.log(this.currentNumber);
+        console.log(this.total);
+        break;
     default:
     }
     console.log(this.total, 'total');
+  }
+
+  clear() {
+    this.numbers = '';
+    this.currentDisplay = '';
+    this.num1 = null
+    this.start = true;
+    this.timesStart = true;
+    this.lastOperator = '';
+    this.total = 0;
+    document.getElementById("display").innerHTML = this.currentDisplay
   }
 
   // checkForOperators(currentValue) {
@@ -107,12 +159,6 @@ class Calucator {
   //   // }
   // }
 
-  getTotal() {
-    console.log(this.total.toString());
-    debugger
-    this.total = 0;
-
-  }
 
 }
 
