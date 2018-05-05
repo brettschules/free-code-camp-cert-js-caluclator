@@ -56,7 +56,8 @@ class Calucator {
     this.n.render();
     this.numbers = '';
     this.currentDisplay = '';
-    this.num1 = null
+    this.num1 = ''
+    this.num2 = ''
     this.start = true;
     this.timesStart = true;
     this.lastOperator = '';
@@ -70,7 +71,7 @@ class Calucator {
     for (var i = 0; i < buttonElements.length; i++) {
       buttonElements[i].addEventListener("click", this.display.bind(this))
     }
-    totalElement.addEventListener("click", this.getTotal.bind(this))
+    totalElement.addEventListener("click", this.doMath.bind(this))
     clearElement.addEventListener("click", this.clear.bind(this))
   }
 
@@ -78,61 +79,69 @@ class Calucator {
     var value = test.currentTarget.id;
     var element = document.getElementById("display");
     this.currentDisplay += value;
-    if (!this.n.operators.includes(value)) {
-      this.currentNumber = value
-    }
-    element.innerHTML = this.currentNumber;
-    this.calculate(value);
+
+    console.log(this.currentDisplay)
+    element.innerHTML = this.currentDisplay;
+    // this.doMath(this.currentDisplay);
   }
 
   getTotal() {
     this.calculate(this.lastOperator)
   }
 
-  calculate(currentOperator) {
+  doMath() {
+    for (let i = 0; i < this.currentDisplay.length; i++) {
+      let currentValue = this.currentDisplay[i]
+      var operator = null;
+      if (this.n.operators.includes(currentValue)) {
+        operator = currentValue
+      }
+      if (operator && this.num2 === '') {
+        this.num1 = this.currentDisplay.slice(0, i)
+        this.num2 = this.currentDisplay.slice(i + 1, this.currentDisplay.length)
+        this.total = parseInt(this.num1, 10);
+        this.currentOperator = operator;
+        this.calculate(this.num2);
+      }
+
+      if (operator && this.num2 !== '') {
+        this.num1 = this.currentDisplay.slice(0, i)
+        this.num2 = this.currentDisplay.slice(i + 1, this.currentDisplay.length)
+        this.total = parseInt(this.num1, 10);
+        this.currentOperator = operator;
+        this.calculate(this.num2);
+      }
+    }
+
+    operator = null;
+  }
+
+  calculate(number) {
     var element = document.getElementById("display");
 
-    switch (currentOperator) {
+    switch (this.currentOperator) {
       case '+':
-      this.total += parseInt(this.currentNumber, 10)
+      this.total += parseInt(number, 10)
       element.innerHTML = this.total;
-      this.lastOperator = '+'
       break;
 
       case '-':
-        if (this.start) {
-          this.total = parseInt(this.currentNumber, 10);
-          this.start = false;
-        }
-        this.total -= parseInt(this.currentNumber, 10)
+        this.total -= parseInt(number, 10)
         element.innerHTML = this.total;
-        this.lastOperator = '-';
         break
 
       case 'x':
-        if (this.start) {
-          this.total = 1;
-          this.start = false;
-        }
-        this.total *= parseInt(this.currentNumber, 10)
+        this.total *= parseInt(number, 10)
         element.innerHTML = this.total;
-        this.lastOperator = 'x';
-        console.log(this.total, 'total');
-        console.log(this.currentNumber, 'currentNumber');
         break
 
       case '/':
-      if (this.start) {
-        this.total  = this.total + 1 * this.currentNumber;
-        this.start = false;
-      }
-      this.total /= parseInt(this.currentNumber, 10)
+        this.total /= parseInt(number, 10)
         element.innerHTML = this.total;
-        console.log(this.currentNumber);
-        console.log(this.total);
         break;
     default:
     }
+    this.currentDisplay = this.total;
     console.log(this.total, 'total');
   }
 
@@ -143,6 +152,8 @@ class Calucator {
     this.start = true;
     this.timesStart = true;
     this.lastOperator = '';
+    this.num1 = ''
+    this.num2 = ''
     this.total = 0;
     document.getElementById("display").innerHTML = this.currentDisplay
   }
